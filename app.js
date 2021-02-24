@@ -22,7 +22,7 @@ function checkStatus(response) {
     }
 }
 
-//Gallery onclick
+//Global Variables
 const galleryContainer = document.querySelector('#gallery');
 const cards = document.querySelectorAll('.card')
 const modalDiv = document.createElement('div')
