@@ -12,7 +12,6 @@ fetchData('https://randomuser.me/api/?results=1&nat=us')
         createSearch()
         cardsHandler(users)
         modalMarkup()
-        searchFunctionality()
     });
 
 function checkStatus(response) {
@@ -51,6 +50,9 @@ function modalMarkup() {
 }
 
 function updateModal(data) {
+    const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
+    const dob = `${data.dob.date.substring(0,10)}`
+    
     const addData = `
             <div class="modal-info-container">
                 <img class="modal-img" src="${data.picture.large}" alt="${data.name.first} ${data.name.last}">
@@ -60,7 +62,7 @@ function updateModal(data) {
                 <hr>
                 <p class="modal-text">${data.cell}</p>
                 <p class="modal-text">${data.location.state}, ${data.location.city}, ${data.location.country} ${data.location.postcode}</p>
-                <p class="modal-text">Birthday: ${data.dob.date}</p>
+                <p class="modal-text">Birthday: ${dob.replace(regex, `$3-$2-$1`)}</p>
             </div>
         `    
     const modalContainer = document.querySelector('.modal')
@@ -137,6 +139,5 @@ function searchedEmployee(data) {
         }
     }
     return searchMatch;
-    
 }
 
