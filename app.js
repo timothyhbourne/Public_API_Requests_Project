@@ -9,8 +9,9 @@ fetchData('https://randomuser.me/api/?results=7')
     .then(data => {
         const users = data.results
         createGallery(users)
-        modalMarkup()
         createSearch()
+        cardsHandler(users)
+        modalMarkup()
     });
 
 function checkStatus(response) {
@@ -22,11 +23,7 @@ function checkStatus(response) {
 }
 
 //Global Variables
-const galleryContainer = document.querySelector('#gallery');
-const modalContainer = document.querySelector('.modal-container')
-const modalCloseBtn = document.querySelector('#modal-close-btn')    
-console.log(modalContainer);
-const cards = document.querySelectorAll('.card')
+const galleryContainer = document.querySelector('#gallery');  
 const modalDiv = document.createElement('div')
 const body = document.querySelector('body');
 
@@ -35,64 +32,55 @@ const body = document.querySelector('body');
   // Target the modal container and hide it with the style.dsiplay property
   // Target the modal close btn and give it a click handler that also hides the modal container
 function modalMarkup() {
-
     const markup =  `
     <div class="modal-container">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-                <div class="modal-info-container">
-
-                </div>
             </div>
 
             <div class="modal-btn-container">
                 <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
                 <button type="button" id="modal-next" class="modal-next btn">Next</button>
             </div>
-        </div>`
+    </div>`
     galleryContainer.insertAdjacentHTML('afterend', markup);
-    // modalContainer.style.display = 'none';
-    modalCloseBtn.addEventListener('click', () => modalContainer.style.display = 'none')
+    const modalContainer = document.querySelector('.modal-container')
+    const modalCloseBtn = document.querySelector('#modal-close-btn')
+    modalContainer.style.display = 'none'
+    modalCloseBtn.addEventListener('click', () => {
+        modalContainer.style.display = 'none';
+        document.querySelector('.modal-info-container').remove();
+    } );
 }
 
+function updateModal(data) {
+    const addData = `
+            <div class="modal-info-container">
+                <img class="modal-img" src="${data.picture.large}" alt="${data.name.first} ${data.name.last}">
+                <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
+                <p class="modal-text">${data.email}</p>
+                <p class="modal-text cap">${data.location.city}</p>
+                <hr>
+                <p class="modal-text">${data.cell}</p>
+                <p class="modal-text">${data.location.state}, ${data.location.city}, ${data.location.country} ${data.location.postcode}</p>
+                <p class="modal-text">Birthday: ${data.dob.date}</p>
+            </div>
+        `    
+    const modalContainer = document.querySelector('.modal')
+    modalContainer.insertAdjacentHTML('afterbegin', addData)
+}
 
-// Create update modal function that accepts one parameter, which will be an employee object
-  // Target the "modal-info-container" div and set its inner HTML to an empty string, ''
-  // Use example markup and interpolated template literals with the info in the parameter to add the unique parts of the modal
-  // Target the "modal-info-container" div and use insertAdjacentHTML method with 'afterbegin' option to append unique modal info
+function cardsHandler(data) {
+    const cards = document.querySelectorAll('.card')
 
-  // function updateModal(data) {
-//     const modalInfoContainer = document.querySelector('.modal-info-container');
-//     modalInfoContainer.innerHTML = ''
-//     const addData = `
-//             <div class="modal-info-container">
-//                 <img class="modal-img" src="${data.picture.large}" alt="${data.name.first} ${data.name.last}">
-//                 <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
-//                 <p class="modal-text">${data.email}</p>
-//                 <p class="modal-text cap">${data.location.city}</p>
-//                 <hr>
-//                 <p class="modal-text">${data.cell}</p>
-//                 <p class="modal-text">${data.location.state}, ${data.location.city}, ${data.location.country} ${data.location.postcode}</p>
-//                 <p class="modal-text">Birthday: ${data.dob.date}</p>
-//             </div>
-//     `
-//     modalInfoContainer.insertAdjacentHTML('afterbegin', addData)
-// }
-
-// Create function to add click handler to cards, which accepts one parameter, which will be array of results
-  // Target all the cards and loop over them
-    // Add click handler to each card
-      // Target and display the modal container
-      // Call the update modal function, passing in the object at the loop's current iteration
-
-// function cardsHandler(data) {
-//     for (let i = 0; i < cards.length; i++) {
-//         cards[i].addEventListener('click', (e) => {
-//             modalMarkup()
-//             updateModal(data[i])
-//         })
-//     }
-// }
+    for (let i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click', () => {
+            document.querySelector('.modal-container').style.display = 'block'
+            updateModal(data[i])
+            
+        })
+    }
+}
 
 // Search Container
 function createSearch() {
@@ -105,7 +93,6 @@ function createSearch() {
     `;
     searchContainer.insertAdjacentHTML("beforeend", searchHTML);
 }
-
 
 // Gallery Function
 function createGallery(data) {
