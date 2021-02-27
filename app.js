@@ -5,13 +5,14 @@ function fetchData(url) {
             .catch(error => console.log('Looks like there was a problem', error));
 }
 
-fetchData('https://randomuser.me/api/?results=7')
+fetchData('https://randomuser.me/api/?results=1&nat=us')
     .then(data => {
         const users = data.results
         createGallery(users)
         createSearch()
         cardsHandler(users)
         modalMarkup()
+        searchFunctionality()
     });
 
 function checkStatus(response) {
@@ -27,10 +28,6 @@ const galleryContainer = document.querySelector('#gallery');
 const modalDiv = document.createElement('div')
 const body = document.querySelector('body');
 
-// Create a function that uses example markup to create a template literal for all the parts of the modal that never change, which is everything except what's inside the "modal-info-container" div
-  // Use insertAdjacentHTML method with 'aftereend' option to append modal constants to the gallery
-  // Target the modal container and hide it with the style.dsiplay property
-  // Target the modal close btn and give it a click handler that also hides the modal container
 function modalMarkup() {
     const markup =  `
     <div class="modal-container">
@@ -111,5 +108,35 @@ function createGallery(data) {
         `
         galleryContainer.insertAdjacentHTML('beforeend', galleryHTML)
     })
+}
+
+// function searchFunctionality(data) {
+//     const searchInput = document.querySelector('#search-input');
+//     const cards = document.querySelectorAll('.card')
+
+//     // searchInput.addEventListener('keyup', (e) => {
+//     //     for (let i = 0; i < cards.length; i++) {
+//     //         if (cards[i].children[1].children[0].innerHTML.includes(e.key)) {
+//     //             console.log('there is a match');
+//     //         } else {
+//     //             console.log('there is no match');
+//     //         }
+//     //     }
+//     // })
+// }
+const searchInput = document.querySelector('#search-input');
+
+function searchedEmployee(data) {
+    const searchMatch = [];
+
+    for (let i = 0; i < data.length; i++) {
+        let fullName = `${user[i].name.first.toLowerCase()} ${user[i].name.first.toLowerCase()}`
+
+        if (fullName.includes(searchInput.value.toLowerCase())) {
+            searchMatch.push(data[i])
+        }
+    }
+    return searchMatch;
+    
 }
 
