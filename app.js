@@ -22,11 +22,9 @@ function checkStatus(response) {
 }
 
 //Global Variables
-
 const galleryContainer = document.querySelector('#gallery');
 const modalContainer = document.querySelector('.modal-container')
 const modalCloseBtn = document.querySelector('#modal-close-btn')    
-
 console.log(modalContainer);
 const cards = document.querySelectorAll('.card')
 const modalDiv = document.createElement('div')
