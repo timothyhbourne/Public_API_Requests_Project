@@ -1,3 +1,4 @@
+//Fetch API Function consolidation
 function fetchData(url) {
     return fetch(url)
             .then(checkStatus)
@@ -5,15 +6,7 @@ function fetchData(url) {
             .catch(error => console.log('Looks like there was a problem', error));
 }
 
-fetchData('https://randomuser.me/api/?results=1&nat=us')
-    .then(data => {
-        const users = data.results
-        createGallery(users)
-        createSearch()
-        cardsHandler(users)
-        modalMarkup()
-    });
-
+//API status check
 function checkStatus(response) {
     if (response.ok) {
         return Promise.resolve(response);
@@ -22,11 +15,24 @@ function checkStatus(response) {
     }
 }
 
+//Run the fetch API
+fetchData('https://randomuser.me/api/?results=12&nat=us')
+    .then(data => {
+        const users = data.results
+        createGallery(users)
+        createSearch()
+        cardsHandler(users)
+        modalMarkup()
+        searchFunctionality()
+    });
+
 //Global Variables
 const galleryContainer = document.querySelector('#gallery');  
 const modalDiv = document.createElement('div')
 const body = document.querySelector('body');
+const index = 0;
 
+//Modal markup + modal closes if user click outisde of modal
 function modalMarkup() {
     const markup =  `
     <div class="modal-container">
@@ -40,15 +46,26 @@ function modalMarkup() {
             </div>
     </div>`
     galleryContainer.insertAdjacentHTML('afterend', markup);
+    
     const modalContainer = document.querySelector('.modal-container')
     const modalCloseBtn = document.querySelector('#modal-close-btn')
+    
     modalContainer.style.display = 'none'
+    
     modalCloseBtn.addEventListener('click', () => {
         modalContainer.style.display = 'none';
         document.querySelector('.modal-info-container').remove();
     } );
+
+    document.addEventListener('click', (e) => { 
+        if (e.target.className === 'modal-container') {
+        modalContainer.style.display = 'none';
+        document.querySelector('.modal-info-container').remove();
+        }
+    })
 }
 
+//Update modal function
 function updateModal(data) {
     const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
     const dob = `${data.dob.date.substring(0,10)}`
@@ -66,9 +83,10 @@ function updateModal(data) {
             </div>
         `    
     const modalContainer = document.querySelector('.modal')
-    modalContainer.insertAdjacentHTML('afterbegin', addData)
+    modalContainer.insertAdjacentHTML('afterbegin', addData);
 }
 
+//Card click Handler
 function cardsHandler(data) {
     const cards = document.querySelectorAll('.card')
 
@@ -76,12 +94,11 @@ function cardsHandler(data) {
         cards[i].addEventListener('click', () => {
             document.querySelector('.modal-container').style.display = 'block'
             updateModal(data[i])
-            
         })
     }
 }
 
-// Search Container
+//Append search to body
 function createSearch() {
     const searchContainer = document.querySelector('.search-container');
     const searchHTML = `
@@ -93,7 +110,7 @@ function createSearch() {
     searchContainer.insertAdjacentHTML("beforeend", searchHTML);
 }
 
-// Gallery Function
+//Show Gallery
 function createGallery(data) {
     data.forEach(user => { 
         const galleryHTML = `
@@ -112,32 +129,22 @@ function createGallery(data) {
     })
 }
 
-// function searchFunctionality(data) {
-//     const searchInput = document.querySelector('#search-input');
-//     const cards = document.querySelectorAll('.card')
+//Search bar functionality
+function searchFunctionality() {
+    const input = document.querySelector('#search-input');
+    const names = document.querySelectorAll('#name')
 
-//     // searchInput.addEventListener('keyup', (e) => {
-//     //     for (let i = 0; i < cards.length; i++) {
-//     //         if (cards[i].children[1].children[0].innerHTML.includes(e.key)) {
-//     //             console.log('there is a match');
-//     //         } else {
-//     //             console.log('there is no match');
-//     //         }
-//     //     }
-//     // })
-// }
-const searchInput = document.querySelector('#search-input');
+    names.forEach(name => {
+        const cardDiv = name.parentElement.parentElement;
+        
+        input.addEventListener('keyup', (e) => {
+            let inputValue = e.target.value.toLowerCase()
 
-function searchedEmployee(data) {
-    const searchMatch = [];
-
-    for (let i = 0; i < data.length; i++) {
-        let fullName = `${user[i].name.first.toLowerCase()} ${user[i].name.first.toLowerCase()}`
-
-        if (fullName.includes(searchInput.value.toLowerCase())) {
-            searchMatch.push(data[i])
-        }
-    }
-    return searchMatch;
+            if (name.textContent.toLowerCase().includes(inputValue)) {
+                cardDiv.style.display = '';
+            } else {
+                cardDiv.style.display = 'none';
+            }
+        })
+    })
 }
-
