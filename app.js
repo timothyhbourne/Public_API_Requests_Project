@@ -30,7 +30,6 @@ fetchData('https://randomuser.me/api/?results=12&nat=us')
 const galleryContainer = document.querySelector('#gallery');  
 const modalDiv = document.createElement('div')
 const body = document.querySelector('body');
-const index = 0;
 
 //Modal markup + modal closes if user click outisde of modal
 function modalMarkup() {
