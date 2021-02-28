@@ -55,7 +55,7 @@ function modalMarkup() {
     modalCloseBtn.addEventListener('click', () => {
         modalContainer.style.display = 'none';
         document.querySelector('.modal-info-container').remove();
-    } );
+    });
 
     document.addEventListener('click', (e) => { 
         if (e.target.className === 'modal-container') {
@@ -91,14 +91,14 @@ function cardsHandler(data) {
     const cards = document.querySelectorAll('.card')
 
     for (let i = 0; i < cards.length; i++) {
-        cards[i].addEventListener('click', () => {
+        cards[i].addEventListener('click', (e) => {
             document.querySelector('.modal-container').style.display = 'block'
             updateModal(data[i])
         })
     }
 }
 
-//Append search to body
+//Append search-bar into HTML body
 function createSearch() {
     const searchContainer = document.querySelector('.search-container');
     const searchHTML = `
