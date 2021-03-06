@@ -133,24 +133,34 @@ function modalMarkup() {
 function browseModal(data, index) {
     const modalNext = document.querySelector('#modal-next');
     const modalPrev = document.querySelector('#modal-prev');
-    const cards = document.querySelectorAll('.card')
+    const cards = document.querySelectorAll('.card');
     const modal = document.querySelector('.modal');
-    
+
     for (let i = 0; i < cards.length; i++) {
         cards[i].addEventListener('click', () => {
             index = data.indexOf(data[i]);
-        })
-    }
+            if (index === 0) {
+                modalPrev.style.display = 'none';
+            }
+        });
+
+    };
 
     modalNext.addEventListener('click', () => {
         index++;
-        if (index >= data.length) {
-            index = -1;
-        } else if (index <= data.length) {
-            console.log(index);
+        if (index <= data.length) {
             modal.firstElementChild.remove();
             updateModal(data[index]);
-        }
+        } else if (index >= data.length) {
+            index = -1;
+        };
+
+        //removes bext button if it reaches last employee
+        if (index === data.length - 1) {
+            modalNext.style.display = 'none';
+        } else if (index < data.length) {
+            modalPrev.style.display = 'block';
+        };
     })
 
     modalPrev.addEventListener('click', () => {
@@ -158,17 +168,27 @@ function browseModal(data, index) {
         if (index <= -1) {
             index = -1;
         } else if (index <= data.length) {
-            console.log(index);
             modal.firstElementChild.remove();
             updateModal(data[index]);
-        }
-    })
+            console.log(index);
+        };
+
+        //removes prev button if it reaches 1st employee
+        if (index < data.length) {
+            modalNext.style.display = 'block';
+        };
+        if (index === 0) {
+            modalPrev.style.display = 'none';
+        };
+    });
 }
 
 //Function to update modal data
 function updateModal(data) {
     const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
     const dob = `${data.dob.date.substring(0,10)}`;
+    const cell = `${data.cell.substring(0,14)}`
+    const cellRegex = /^.(\d{3}).-(\d{3})-(\d{4})$/
     
     const addData = `
             <div class="modal-info-container">
@@ -177,9 +197,9 @@ function updateModal(data) {
                 <p class="modal-text">${data.email}</p>
                 <p class="modal-text cap">${data.location.city}</p>
                 <hr>
-                <p class="modal-text">${data.cell}</p>
+                <p class="modal-text">${cell.replace(cellRegex, `($1) $2-$3`)}</p>
                 <p class="modal-text">${data.location.state}, ${data.location.city}, ${data.location.country} ${data.location.postcode}</p>
-                <p class="modal-text">Birthday: ${dob.replace(regex, `$3-$2-$1`)}</p>
+                <p class="modal-text">Birthday: ${dob.replace(regex, `$2/$3/$1`)}</p>
             </div>
         `    
     const modalContainer = document.querySelector('.modal');
